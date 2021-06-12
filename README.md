@@ -1,16 +1,25 @@
 # cZone--Processing3--tamaClock
 
-re-updated: Thu May 20 11:20:21 JST 2021
+re-edited: Thu May 20 11:20:21 JST 2021
 
-Last update: Sat Jun 12 17:47:32 JST 2021
+Last update: Sun Jun 13 02:15:55 JST 2021
 
     ./cZone--Processing3--tamaClock/
+    ├── .DS_Store
+    ├── .git
+    │  ├  :
+    │  ├  :
+    │  └── ....
+    ├── .gitignore
+    ├── 00doit.sh  // <-- This will not be pushed to the repository.
     ├── README.md
     └── tamaClock
+        ├── .DS_Store
         ├── clock.mov
         ├── sketch.properties
         ├── tamaClock.pde
         ├── tamahime-360x450.png
         └── tamahime.png
     
-    1 directory, 7 files
+    8 directories, 17 files
+
