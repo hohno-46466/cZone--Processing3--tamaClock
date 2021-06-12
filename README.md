@@ -5,7 +5,6 @@ re-updated: Thu May 20 11:20:21 JST 2021
 Last update: Sat Jun 12 17:47:32 JST 2021
 
     ./cZone--Processing3--tamaClock/
-    ├── 00doit.sh
     ├── README.md
     └── tamaClock
         ├── clock.mov
