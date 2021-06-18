@@ -41,7 +41,8 @@ void setup() {
   smooth();
   frameRate(30);
   // img = loadImage("/home/pi/Desktop/tamahime-360x450.png");
-  img = loadImage("/Users/hohno/Documents/Processing/2016/sketch_20160308a_tamaClock/tamahime-360x450.png");
+  // img = loadImage("/Users/hohno/Documents/Processing/2016/sketch_20160308a_tamaClock/tamahime-360x450.png");
+  img = loadImage("tamahime-360x450.png");
   colorMode(RGB, 256);
   textAlign(CENTER, CENTER);
   rectMode(CENTER);  
