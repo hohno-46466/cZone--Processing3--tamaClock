@@ -1,7 +1,8 @@
 
 // Prev update: 3/9/2016 by hohno
 // Prev update: 4/6/2016 by hohno
-// Last update: Sat Mar 24 13:19:14 JST 2018
+// Prev update: Sat Mar 24 13:19:14 JST 2018
+// Last update: Sun Jun 20 17:29:05 JST 2021
 
 // Originai: http://yoppa.org/proga10/1419.html
 
@@ -11,7 +12,7 @@
 // ---------------------------------------------------------
 
 final int screen_w = 640; // 320; // 640; // 320; // 640;
-final int screen_h = 400; //240; // 400; // 200; // 400;
+final int screen_h = 400; // 240; // 400; // 200; // 400;
 
 // ---------------------------------------------------------
 
@@ -40,9 +41,7 @@ void setup() {
   stroke(255);
   smooth();
   frameRate(30);
-  // img = loadImage("/home/pi/Desktop/tamahime-360x450.png");
-  // img = loadImage("/Users/hohno/Documents/Processing/2016/sketch_20160308a_tamaClock/tamahime-360x450.png");
-  img = loadImage("tamahime-360x450.png");
+  img = loadImage("data/tamahime-360x450.png");
   colorMode(RGB, 256);
   textAlign(CENTER, CENTER);
   rectMode(CENTER);  
