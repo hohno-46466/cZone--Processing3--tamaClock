@@ -1,13 +1,12 @@
-
 // Prev update: 3/9/2016 by hohno
 // Prev update: 4/6/2016 by hohno
-// Prev update: Sat Mar 24 13:19:14 JST 2018
-// Last update: Sun Jun 20 17:29:05 JST 2021
+// Prev update: Sat Mar 24 13:19:14 JST 2018 by @hohno_at_kuimc
+// Last update: Sun Jun 20 17:29:05 JST 2021 by @hohno_at_kuimc
 
 // Originai: http://yoppa.org/proga10/1419.html
 
 // Build with:
-// $ processing-java --sketch=`pwd` --output=`pwd`/output --force --present 
+// $ processing-java --sketch=`pwd` --output=`pwd`/output --force --present
 
 // ---------------------------------------------------------
 
@@ -44,7 +43,7 @@ void setup() {
   img = loadImage("data/tamahime-360x450.png");
   colorMode(RGB, 256);
   textAlign(CENTER, CENTER);
-  rectMode(CENTER);  
+  rectMode(CENTER);
   imageMode(CENTER);
 }
 
@@ -58,10 +57,10 @@ void sub2() {
   int sub2_h = tama_h;
   int sub2_tw = 135;	// text width
   int sub2_th = 14;	// text height
-  
+
   if (debugflag) {strokeWeight(1); rect(sub2_cx, sub2_cy, sub2_w, sub2_h);}
   image(img, sub2_cx, sub2_cy, sub2_w, sub2_h);
-  
+
   if (debugflag) {strokeWeight(1); rect(sub2_cx, sub2_cy + sub2_h *0.45,  sub2_tw, sub2_th);}
   textSize(sub2_th);
   text("(c) Tamahime-chan", sub2_cx, sub2_cy + sub2_h *0.45);
@@ -76,12 +75,12 @@ void sub1(int YY, int MM, int DD, int hh, int mm, int ss) {
   int sub1_tw = sub1_th * 14; // 280;	// text width
   int sub1_cx = hands_cx;
   int sub1_cy = int(screen_h * 0.975 - sub1_th /2);
-  
+
   char data[] = {'2', '0', '1', '6', '-', '0', '3', '-', '1', '0', ' ', '(', 'w', 'w', 'w', ')', ' ','1', '2', ':', '3', '4', ':', '5', '6'};
   String wodstr[] = { "Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "xxx" };
   int wod = 5;
   int dom[] = {31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31};
-  
+
   if (YY >= 2000) {
     wod += 365*(YY-2000);
     wod += (int)(((YY + 3) - 2000) / 4);
@@ -90,38 +89,38 @@ void sub1(int YY, int MM, int DD, int hh, int mm, int ss) {
       if ((i == 1) && ((YY % 4) == 0)) { wod++; }
     }
     wod += DD;
-    wod %= 7; 
+    wod %= 7;
   }
   data[0] = char (int('0') + (int)(YY / 1000));
   data[1] = char (int('0') + (int)((YY % 1000)/100));
   data[2] = char (int('0') + (int)((YY % 100) / 10));
   data[3] = char (int('0') + (int)(YY % 10));
-  
+
   data[5] = char (int('0') + (int)(MM / 10));
   data[6] = char (int('0') + (int)(MM % 10));
-  
+
   data[8] = char (int('0') + (int)(DD / 10));
   data[9] = char (int('0') + (int)(DD % 10));
-  
+
   data[12] = wodstr[wod].charAt(0);
   data[13] = wodstr[wod].charAt(1);
   data[14] = wodstr[wod].charAt(2);
-  
+
   data[17] = char (int('0') + (int)(hh / 10));
   data[18] = char (int('0') + (int)(hh % 10));
-  
+
   data[20] = char (int('0') + (int)(mm / 10));
   data[21] = char (int('0') + (int)(mm % 10));
-  
+
   data[23] = char (int('0') + (int)(ss / 10));
   data[24] = char (int('0') + (int)(ss % 10));
-  
+
   textSize(sub1_th);
   String str = new String(data);
-  
+
   if (debugflag) {strokeWeight(1); rect(sub1_cx, sub1_cy, sub1_tw, sub1_th);}
   text(str, sub1_cx, sub1_cy);
-  
+
 }
 
 // ---------------------------------------------------------
@@ -133,8 +132,8 @@ void sub3(int YY, int MM, int DD, int hh, int mm, int ss) {
   float s = ss;
   float m = mm + (s/60.0);
   float h = (hh % 12) + (m/60.0);
-  
-  int colTable[] = { 
+
+  int colTable[] = {
   #f70f1f, // haruka (y)
   #0775c4, // chihaya (D)
   #aececb, // yukiho (f)
@@ -148,14 +147,14 @@ void sub3(int YY, int MM, int DD, int hh, int mm, int ss) {
   #00b1bb, // hibiki ()
   #b51d66 // takane ()
   };
-  
+
   String nameTable[] = {
   "Haruka"  , "Chihaya" , " Yukiho" , "Yayoi"   ,
   "Ritsuko" , "Azusa"   , "Iori"    , "Makoto"  ,
   "Ami/Mami", "Miki"    , "Hibiki"  , "Takane " , "12345678",
   };
-  
-  
+
+
   translate(hands_cx, hands_cy);
   int sub3_cx = 0;
   int sub3_cy = 0;
@@ -169,8 +168,8 @@ void sub3(int YY, int MM, int DD, int hh, int mm, int ss) {
   if (debugflag) {strokeWeight(1); rect(0, 0, sub3_w, sub3_h); rect(sub3_cx, sub3_cy + hands_len * 0.25, sub3_tw, sub3_th);}
 
   fill(colTable[(ss / 5) % 12]);
-  text(nameTable[(ss / 5) % 12], sub3_cx, sub3_cy + hands_len * 0.25); 
-  
+  text(nameTable[(ss / 5) % 12], sub3_cx, sub3_cy + hands_len * 0.25);
+
   rotate(radians(180));
 
   pushMatrix();
@@ -192,21 +191,21 @@ void sub3(int YY, int MM, int DD, int hh, int mm, int ss) {
 
   noFill();
   stroke(255); // stroke with white
- 
+
   // sec hand
   pushMatrix();
     rotate(radians(s * 6));
     strokeWeight(1);
     line(0, 0, 0, r - MARGIN);
   popMatrix();
- 
+
   // minute hand
   pushMatrix();
     rotate(radians(m * 6));
     strokeWeight(4);
     line(0, 0, 0, r * 0.85 - MARGIN);
   popMatrix();
- 
+
   // hour hand
   pushMatrix();
     rotate(radians(h * 30));
@@ -227,9 +226,9 @@ void draw() {
   int hh = hour();
   int YY = year();
   int MM = month();
-  int DD = day(); 
+  int DD = day();
 
-  background(0);  
+  background(0);
   // draw digital clock part
   sub1(YY, MM, DD, hh, mm, ss);
   // draw tamahime-chan
