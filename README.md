@@ -1,4 +1,4 @@
-# cZone--Processing3--tamaClock
+# GitHub/cZone--Processing3--tamaClock
 
 re-edited: Thu May 20 11:20:21 JST 2021
 
@@ -23,3 +23,5 @@ Last update: Sun Jun 13 02:15:55 JST 2021
     
     8 directories, 17 files
 
+
+-EOF-
