@@ -1,7 +1,13 @@
+//
+// Processing3/2016/sketch_20160308a_tamaClock/2016/sketch_20160308a_tamaClock/sketch_20160308a_tamaClock.pde
+//
+
 // Prev update: 3/9/2016 by hohno
 // Prev update: 4/6/2016 by hohno
 // Prev update: Sat Mar 24 13:19:14 JST 2018 by @hohno_at_kuimc
-// Last update: Sun Jun 20 17:29:05 JST 2021 by @hohno_at_kuimc
+// Prev update: Sun Jun 20 17:29:05 JST 2021 by @hohno_at_kuimc
+// Last update: Wed Aug 18 20:57:08 JST 2021 by @hohno_at_kuimc
+
 
 // Originai: http://yoppa.org/proga10/1419.html
 
@@ -16,8 +22,7 @@ final int screen_h = 400; // 240; // 400; // 200; // 400;
 // ---------------------------------------------------------
 
 boolean debugflag = false;
-
-PImage img;
+PImage[] picImg;
 
 int tama_w = screen_w * 3 / 8;		// 120; // 360;
 int tama_h = screen_h * 3 / 4;		// 150; // 450;
@@ -29,27 +34,121 @@ int MARGIN = 10; // 20;
 
 // ---------------------------------------------------------
 
+myKeyboard myKBD = new myKeyboard();
+myTest myTST = new myTest(9,8,7);
+
+// ---------------------------------------------------------
+// ---------------------------------------------------------
+
+int t_YY, t_MM, t_DD, t_hh, t_mm, t_ss, t_unix, t_millis_0, t_millis_1;
+
+
+int time2ut(int t_YY, int t_MM, int t_DD, int t_hh, int t_mm, int t_ss) {
+
+  return(0);
+}
+
+
+// ---------------------------------------------------------
+
+void ut2time() {
+}
+
+// ---------------------------------------------------------
+
+// 現在の millis() をもとに t_millis_0 と UnixTime を更新
+
+int updateUnixTime0() {
+
+  do {
+    t_ss = second();
+    t_mm = minute();
+    t_hh = hour();
+    t_YY = year();
+    t_MM = month();
+    t_DD = day();
+    t_unix = time2ut(t_YY, t_MM, t_DD, t_hh, t_mm, t_ss);
+  } while (t_ss != second());
+
+  t_millis_0 = millis();
+  t_millis_1 = t_millis_0;
+
+  return(t_unix);
+}
+
+// ---------------------------------------------------------
+
+// millis() と t_millis_0 をもとに UnixTime を更新（t_millis_0 は更新しない）
+
+int updateUnixTime1() {
+  t_millis_1 = millis();
+  t_unix += (t_millis_1 - t_millis_0) / 1000;
+  ut2time();
+
+  return(t_unix);
+}
+
+// ---------------------------------------------------------
+
+// 引数で与えた数値と t_millis_0 をもとに UnixTime を更新（t_millis_0 は更新しない）
+
+int updateUnixTime2(int t) {
+
+  if (t <= 0) {
+    return(0);
+  }
+
+  t_millis_1 = t;
+  t_unix += (t_millis_1 - t_millis_0) / 1000;
+  ut2time();
+
+  return(t_unix);
+}
+
+// ---------------------------------------------------------
+// ---------------------------------------------------------
+
+
 void settings() {
   size(screen_w, screen_h);
 }
 
 // ---------------------------------------------------------
+// ---------------------------------------------------------
+
+final int N_images = 30;
+
+void setImages() {
+
+  picImg = new PImage[N_images];
+
+  // Use the following one-liner to prepare a group of images (In case N_image is 30).
+  // $ for a in $(seq 1 1 29); do b=$(($a * 12)); echo $a; convert tamahime-360x450.png -roll +${b}+0 tamahime-$(printf "%02d" $a).png; done
+
+  for(int i = 0; i < N_images; i++) {
+    if (i < 10) {
+      picImg[i]  = loadImage("data/tamahime-0" + i + ".png");
+    } else {
+      picImg[i]  = loadImage("data/tamahime-" + i + ".png");
+    }
+  }
+}
 
 void setup() {
   background(0);
   stroke(255);
   smooth();
   frameRate(30);
-  img = loadImage("data/tamahime-360x450.png");
   colorMode(RGB, 256);
   textAlign(CENTER, CENTER);
   rectMode(CENTER);
   imageMode(CENTER);
+  setImages();
 }
 
 // ---------------------------------------------------------
 
-void sub2() {
+void sub2(int _mm, int _ss) {
 
   int sub2_cx = screen_w - tama_w /2 - MARGIN;
   int sub2_cy = screen_h /2 ;
@@ -58,8 +157,9 @@ void sub2() {
   int sub2_tw = 135;	// text width
   int sub2_th = 14;	// text height
 
+
   if (debugflag) {strokeWeight(1); rect(sub2_cx, sub2_cy, sub2_w, sub2_h);}
-  image(img, sub2_cx, sub2_cy, sub2_w, sub2_h);
+  image(picImg[((_mm*60+_ss)/1)%N_images], sub2_cx, sub2_cy, sub2_w, sub2_h);
 
   if (debugflag) {strokeWeight(1); rect(sub2_cx, sub2_cy + sub2_h *0.45,  sub2_tw, sub2_th);}
   textSize(sub2_th);
@@ -214,40 +314,62 @@ void sub3(int YY, int MM, int DD, int hh, int mm, int ss) {
   popMatrix();
 }
 
+
 // ---------------------------------------------------------
+// ---------------------------------------------------------
+
 
 int maxFrames = 900;
 int currentFrame = 0;
 
+int debugCnt = 0;
+
+
 void draw() {
 
-  int ss = second();
-  int mm = minute();
-  int hh = hour();
-  int YY = year();
-  int MM = month();
-  int DD = day();
+  updateUnixTime0(); // updateUnixTime1()
 
   background(0);
   // draw digital clock part
-  sub1(YY, MM, DD, hh, mm, ss);
+  sub1(t_YY, t_MM, t_DD, t_hh, t_mm, t_ss);
   // draw tamahime-chan
-  sub2();
+  sub2(t_mm, t_ss);
   // draw analog clock part
-  sub3(YY, MM, DD, hh, mm, ss);
+  sub3(t_YY, t_MM, t_DD, t_hh, t_mm, t_ss);
 
   if (currentFrame < maxFrames) {
     // saveFrame("image-####.png");
     currentFrame++;
   }
+
+  if (myKBD.readStringUntil('\n') > 0) {
+    String str = new String(myKBD.mesgBuff);
+    println("[" + debugCnt + "](" + myKBD.getBuffPos() + "/" + myKBD.getMesgLen() + ")(" + str +  ")" );
+
+    // println(myKBD._i_mesgBuffSize);
+    // myTST.x = 1;   myTST.y = 2;  myTST.z = debugCnt;
+    // println(myTST.x + " " + myTST.y + " " + myTST.z);
+    debugCnt++;
+  }
 }
 
 // ---------------------------------------------------------
+// ---------------------------------------------------------
+
+
+void keyTyped() {
+  myKBD.keyTyped();
+}
+
 
 void keyPressed() {
-  if (key == ' ') {
-    exit();
-  }
+  // if (key == ' ') { exit(); }
 }
+
+
+void keyReleased() {
+}
+
+
 
 // ---------------------------------------------------------
