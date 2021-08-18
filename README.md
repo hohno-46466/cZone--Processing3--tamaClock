@@ -1,4 +1,4 @@
-# GitHub/cZone--Processing3--taet aClock
+# GitHub/cZone--Processing3--tamaClock
 
 re-edited: Thu May 20 11:20:21 JST 2021
 
