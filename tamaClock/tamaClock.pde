@@ -7,7 +7,7 @@
 // Prev update: Sat Mar 24 13:19:14 JST 2018 by @hohno_at_kuimc
 // Prev update: Sun Jun 20 17:29:05 JST 2021 by @hohno_at_kuimc
 // Last update: Wed Aug 18 20:57:08 JST 2021 by @hohno_at_kuimc
-
+// Last update: Thu 19 Aug 2021 11:16:33 AM JST by @hohno_at_kuimc on hohno-ACS-2021R/penguin
 
 // Originai: http://yoppa.org/proga10/1419.html
 
@@ -41,7 +41,6 @@ myTest myTST = new myTest(9,8,7);
 // ---------------------------------------------------------
 
 int t_YY, t_MM, t_DD, t_hh, t_mm, t_ss, t_unix, t_millis_0, t_millis_1;
-
 
 int time2ut(int t_YY, int t_MM, int t_DD, int t_hh, int t_mm, int t_ss) {
 
@@ -116,6 +115,7 @@ void settings() {
 // ---------------------------------------------------------
 // ---------------------------------------------------------
 
+/*
 final int N_images = 30;
 
 void setImages() {
@@ -133,20 +133,43 @@ void setImages() {
     }
   }
 }
+*/
+
+final int N_images = 2;
+
+void setImages() {
+  picImg = new PImage[N_images];
+  picImg[0] = loadImage("data/tamahime-360x450.png");
+  picImg[1] = loadImage("data/tamahime-720x450.png");
+}
+
+int t_offset = 0;
 
 void setup() {
   background(0);
   stroke(255);
   smooth();
-  frameRate(30);
+  frameRate(18);
   colorMode(RGB, 256);
   textAlign(CENTER, CENTER);
   rectMode(CENTER);
   imageMode(CENTER);
   setImages();
+  int t0 = second();
+  while(t0 == second()) {
+    delay(5);
+  }
+  t_offset = millis();
+  print(second() + ", ");
+  print(t_offset + ", ");
+  t_offset %= 1000;
+  println(t_offset);
 }
 
 // ---------------------------------------------------------
+int debugCnt1 = 0;
+int debugCnt2 = 0;
+float prevx = 0.0;
 
 void sub2(int _mm, int _ss) {
 
@@ -156,10 +179,30 @@ void sub2(int _mm, int _ss) {
   int sub2_h = tama_h;
   int sub2_tw = 135;	// text width
   int sub2_th = 14;	// text height
-
-
+  PImage img2;
+  
   if (debugflag) {strokeWeight(1); rect(sub2_cx, sub2_cy, sub2_w, sub2_h);}
-  image(picImg[((_mm*60+_ss)/1)%N_images], sub2_cx, sub2_cy, sub2_w, sub2_h);
+
+// # ifdef TYPE1
+//   image(picImg[((_mm*60+_ss)/1)%N_images], sub2_cx, sub2_cy, sub2_w, sub2_h);
+// # else // TYPE2
+  final float x0 = 13.9; // a little bit larger than 60*1000/360/12.0 = 13.8888...;
+  int sx = second(), tx = millis();
+  while ((sx != second()) || (tx > millis())) { sx = second(); tx = millis() ; }
+  sx = second();
+  tx = millis();
+  float x = ((sx * 1000) + ((tx - t_offset) % 1000)) / x0; // ((millis()) % (60*1000)) / x0;
+  // float x = ((second() * 1000)) / x0; // ((millis()) % (60*1000)) / x0;
+  // print((int)(x/360) + " -> ");
+  // println((int)(x/360));
+  if (x > (360*12)) { println("over flow No." + debugCnt2 + " x = = " + x); x = 360*12; }
+  x = (x % 360);
+  if ((x < prevx) && ((prevx < 355) && (x > 5))) { println("*** " + debugCnt1 + " : " + prevx + " > " + x + " *** " + t_offset); x = prevx; debugCnt1++;}
+  prevx = x;
+  // println((int)x);
+  img2 = picImg[1].get((int)x, 0, 360, 450);
+  image(img2, sub2_cx, sub2_cy, sub2_w, sub2_h);
+// # endif // TYPE2
 
   if (debugflag) {strokeWeight(1); rect(sub2_cx, sub2_cy + sub2_h *0.45,  sub2_tw, sub2_th);}
   textSize(sub2_th);
