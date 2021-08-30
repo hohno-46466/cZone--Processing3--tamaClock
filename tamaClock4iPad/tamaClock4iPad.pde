@@ -47,7 +47,7 @@ myTest myTST = new myTest(9,8,7);
 int t_YY, t_MM, t_DD, t_hh, t_mm, t_ss, t_unix, t_millis_0, t_millis_1;
 
 int time2ut(int t_YY, int t_MM, int t_DD, int t_hh, int t_mm, int t_ss) {
-   
+
    return(0);
 }
 
@@ -61,7 +61,7 @@ void ut2time() {
 // 現在の millis() をもとに t_millis_0 と UnixTime を更新
 
 int updateUnixTime0() {
-   
+
    do {
       t_ss = second();
       t_mm = minute();
@@ -71,10 +71,10 @@ int updateUnixTime0() {
       t_DD = day();
       t_unix = time2ut(t_YY, t_MM, t_DD, t_hh, t_mm, t_ss);
    } while (t_ss != second());
-   
+
    t_millis_0 = millis();
    t_millis_1 = t_millis_0;
-   
+
    return(t_unix);
 }
 
@@ -86,7 +86,7 @@ int updateUnixTime1() {
    t_millis_1 = millis();
    t_unix += (t_millis_1 - t_millis_0) / 1000;
    ut2time();
-   
+
    return(t_unix);
 }
 
@@ -95,15 +95,15 @@ int updateUnixTime1() {
 // 引数で与えた数値と t_millis_0 をもとに UnixTime を更新（t_millis_0 は更新しない）
 
 int updateUnixTime2(int t) {
-   
+
    if (t <= 0) {
       return(0);
    }
-   
+
    t_millis_1 = t;
    t_unix += (t_millis_1 - t_millis_0) / 1000;
    ut2time();
-   
+
    return(t_unix);
 }
 
@@ -124,8 +124,8 @@ final int N_images = 2;
 void setImages() {
    picImg = new PImage[N_images];
    picImg[0] = loadImage("tamahime-360x450.png");
-   // picImg[1] = loadImage("data/tamahime-720x450.png");
-   // picImg[1] = loadImage("data/tamahime-4680x450.
+   // picImg[1] = loadImage("tamahime-720x450.png");
+   // picImg[1] = loadImage("tamahime-4680x450.png");
    picImg[1] = loadImage("tamahime-4680x447-765AS.png");
 }
 
@@ -159,7 +159,7 @@ void setup() {
    rectMode(CENTER);
    imageMode(CENTER);
    setImages();
-   
+
    setToffset();
 }
 
@@ -168,9 +168,9 @@ void setup() {
 int debugCnt1 = 0;
 int debugCnt2 = 0;
 int i_prevx = -1;
-   
+
 void sub2(int _mm, int _ss) {
-   
+
    int sub2_cx = screen_w - tama_w /2 - MARGIN;
    int sub2_cy = screen_h /2 ;
    int sub2_w = tama_w;
@@ -178,30 +178,22 @@ void sub2(int _mm, int _ss) {
    int sub2_tw = 135;	// text width
    int sub2_th = 14;	// text height
    PImage img2 = picImg[1].get(0, 0, image_w, image_h);
-   
+
    if (debugflag) {strokeWeight(1); rect(sub2_cx, sub2_cy, sub2_w, sub2_h);}
-   
-   // # ifdef TYPE1
-   //   image(picImg[((_mm * 60 +_ss)/1)%N_images], sub2_cx, sub2_cy, sub2_w, sub2_h);
-   
-   // # else // TYPE2
-   
-   final float f_x0 = 13.9; // a little bit larger than (60 * 1000)/((image_w * 12)) = 13.8888...;
+
    int i_sx = second(), i_tx = millis();
-   
    while ((i_sx != second()) || (i_tx > millis())) { i_sx = second(); i_tx = millis(); }
    i_sx = second();
    i_tx = millis();
-   // int i_x = int(((i_sx * 1000) + ((i_tx - t_offset) % 1000)) / f_x0); 
-   int i_x = int(((i_sx * 1000) + ((i_tx - t_offset) % 1000)) * 72 / 1000);
-   // int i_x = int(((i_sx * 1000) + ((millis() - i_tx) % 1000)) * 72 / 1000);
-   
+
+   final int dps = image_w * 12 / 60; // == 72 // dps =/dot per second
+   int i_x = int(((i_sx * 1000) + ((i_tx - t_offset) % 1000)) * dps / 1000);
+
    if (i_x > ((image_w * 12))) {
       println("over flow No." + debugCnt2 + " x = = " + i_x);
       i_x = 0; // (image_w * 12);
    }
-   
-   
+
    if ((i_prevx != i_x)) {
       // if ((i_x >= (image_w * 10)) || (i_x < (image_w))) {print(i_x + ", ");}
       // if (i_prevx > i_x) { println(" "); }
@@ -212,29 +204,28 @@ void sub2(int _mm, int _ss) {
       i_prevx = i_x;
       img2 = picImg[1].get(i_x, 0, image_w, image_h);
    }
-   // i_prevx = i_x;
-   
+
    image(img2, sub2_cx, sub2_cy, sub2_w, sub2_h);
-   
+
    if (debugflag) {strokeWeight(1); rect(sub2_cx, sub2_cy + sub2_h * 0.45,  sub2_tw, sub2_th);}
    textSize(sub2_th);
-   text("(c) Tamahime-chan", sub2_cx, sub2_cy + sub2_h * 0.45);     
+   text("(c) Tamahime-chan", sub2_cx, sub2_cy + sub2_h * 0.45);
 }
 
 // ---------------------------------------------------------
 
 void sub1(int YY, int MM, int DD, int hh, int mm, int ss) {
-   
+
    int sub1_th = int(screen_h * 0.06); // 20;	// text height
    int sub1_tw = sub1_th * 14; // 280;	// text width
    int sub1_cx = hands_cx;
    int sub1_cy = int(screen_h * 0.975 - sub1_th /2);
-   
+
    char data[] = {'2', '0', '1', '6', '-', '0', '3', '-', '1', '0', ' ', '(', 'w', 'w', 'w', ')', ' ','1', '2', ':', '3', '4', ':', '5', '6'};
    String wodstr[] = { "Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "xxx" };
    int wod = 5;
    int dom[] = {31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31};
-   
+
    if (YY >= 2000) {
       wod += 365 * (YY - 2000);
       wod += (int)(((YY + 3) - 2000) / 4);
@@ -249,45 +240,45 @@ void sub1(int YY, int MM, int DD, int hh, int mm, int ss) {
    data[1] = char (int('0') + (int)((YY % 1000)/100));
    data[2] = char (int('0') + (int)((YY % 100) / 10));
    data[3] = char (int('0') + (int)(YY % 10));
-   
+
    data[5] = char (int('0') + (int)(MM / 10));
    data[6] = char (int('0') + (int)(MM % 10));
-   
+
    data[8] = char (int('0') + (int)(DD / 10));
    data[9] = char (int('0') + (int)(DD % 10));
-   
+
    data[12] = wodstr[wod].charAt(0);
    data[13] = wodstr[wod].charAt(1);
    data[14] = wodstr[wod].charAt(2);
-   
+
    data[17] = char (int('0') + (int)(hh / 10));
    data[18] = char (int('0') + (int)(hh % 10));
-   
+
    data[20] = char (int('0') + (int)(mm / 10));
    data[21] = char (int('0') + (int)(mm % 10));
-   
+
    data[23] = char (int('0') + (int)(ss / 10));
    data[24] = char (int('0') + (int)(ss % 10));
-   
+
    textSize(sub1_th);
-   // String str = new String(data);
-   // String str = join(data, " "); 
    String str = new String(data);
+   // String str = join(data, " ");
+
    if (debugflag) {strokeWeight(1); rect(sub1_cx, sub1_cy, sub1_tw, sub1_th);}
    text(str, sub1_cx + 192, sub1_cy);
-   
+
 }
 
 // ---------------------------------------------------------
 
 void sub3(int YY, int MM, int DD, int hh, int mm, int ss) {
-   
+
    int r = hands_len;
-   
+
    float s = ss;
    float m = mm + (s/60.0);
    float h = (hh % 12) + (m/60.0);
-   
+
    int colTable[] = {
       #f70f1f, // haruka (y)
       #0775c4, // chihaya (D)
@@ -302,14 +293,14 @@ void sub3(int YY, int MM, int DD, int hh, int mm, int ss) {
       #00b1bb, // hibiki ()
       #b51d66 // takane ()
    };
-   
+
    String nameTable[] = {
       "Haruka"  , "Chihaya" , "Yukiho" , "Yayoi"   ,
       "Ritsuko" , "Azusa"   , "Iori"    , "Makoto"  ,
       "Ami/Mami", "Miki"    , "Hibiki"  , "Takane " , "12345678",
    };
-   
-   
+
+
    translate(hands_cx, hands_cy);
    int sub3_cx = 0;
    int sub3_cy = 0;
@@ -317,16 +308,16 @@ void sub3(int YY, int MM, int DD, int hh, int mm, int ss) {
    int sub3_h = int(screen_h * 0.95);
    int sub3_th = int(screen_h * 0.06); // 20;	// text height
    int sub3_tw = sub3_th * 4;
-   
+
    textSize(sub3_th);
-   
+
    if (debugflag) {strokeWeight(1); rect(0, 0, sub3_w, sub3_h); rect(sub3_cx, sub3_cy + hands_len * 0.25, sub3_tw, sub3_th);}
-   
+
    fill(colTable[(ss / 5) % 12]);
    text(nameTable[(ss / 5) % 12], sub3_cx, sub3_cy + hands_len * 0.25);
-   
+
    rotate(radians(180));
-   
+
    pushMatrix();
    noStroke();
    // draw stones.
@@ -343,24 +334,24 @@ void sub3(int YY, int MM, int DD, int hh, int mm, int ss) {
    }
    fill(255);
    popMatrix();
-   
+
    noFill();
    stroke(255); // stroke with white
-   
+
    // sec hand
    pushMatrix();
    rotate(radians(s * 6));
    strokeWeight(1);
    line(0, 0, 0, r - MARGIN);
    popMatrix();
-   
+
    // minute hand
    pushMatrix();
    rotate(radians(m * 6));
    strokeWeight(4);
    line(0, 0, 0, r * 0.85 - MARGIN);
    popMatrix();
-   
+
    // hour hand
    pushMatrix();
    rotate(radians(h * 30));
@@ -381,9 +372,9 @@ int debugCnt = 0;
 
 
 void draw() {
-   
-   updateUnixTime0(); // 
-   
+
+   updateUnixTime0(); //
+
    background(0);
    // draw digital clock part
    sub1(t_YY, t_MM, t_DD, t_hh, t_mm, t_ss);
@@ -391,16 +382,16 @@ void draw() {
    sub2(t_mm, t_ss);
    // draw analog clock part
    sub3(t_YY, t_MM, t_DD, t_hh, t_mm, t_ss);
-   
+
    if (currentFrame < maxFrames) {
       // saveFrame("image-####.png");
       currentFrame++;
    }
-   
+
    if (myKBD.readStringUntil('\n') > 0) {
       String str = new String(myKBD.mesgBuff);
       println("[" + debugCnt + "](" + myKBD.getBuffPos() + "/" + myKBD.getMesgLen() + ")(" + str /*join(myKBD.mesgBuff, "")*/ +  ")" );
-      
+
       // println(myKBD._i_mesgBuffSize);
       // myTST.x = 1;   myTST.y = 2;  myTST.z = debugCnt;
       // println(myTST.x + " " + myTST.y + " " + myTST.z);

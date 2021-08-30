@@ -29,6 +29,8 @@ int tama_h = screen_h * 3 / 4;		// 150; // 450;
 int hands_cx = screen_w * 5 / 16;
 int hands_cy = screen_h / 2;
 int hands_len = int(screen_h * 0.4);
+final int image_w = 360;
+final int image_h = 447;
 
 int MARGIN = 10; // 20;
 
@@ -46,7 +48,6 @@ int time2ut(int t_YY, int t_MM, int t_DD, int t_hh, int t_mm, int t_ss) {
 
   return(0);
 }
-
 
 // ---------------------------------------------------------
 
@@ -116,35 +117,33 @@ void settings() {
 // ---------------------------------------------------------
 // ---------------------------------------------------------
 
-/*
-final int N_images = 30;
-
-void setImages() {
-
-  picImg = new PImage[N_images];
-
-  // Use the following one-liner to prepare a group of images (In case N_image is 30).
-  // $ for a in $(seq 1 1 29); do b=$(($a * 12)); echo $a; convert tamahime-360x450.png -roll +${b}+0 tamahime-$(printf "%02d" $a).png; done
-
-  for(int i = 0; i < N_images; i++) {
-    if (i < 10) {
-      picImg[i]  = loadImage("data/tamahime-0" + i + ".png");
-    } else {
-      picImg[i]  = loadImage("data/tamahime-" + i + ".png");
-    }
-  }
-}
-*/
 
 final int N_images = 2;
 
 void setImages() {
   picImg = new PImage[N_images];
-  picImg[0] = loadImage("data/tamahime-360x450.png");
-  // picImg[1] = loadImage("data/tamahime-720x450.png");
-  // picImg[1] = loadImage("data/tamahime-4680x450.png");
-  picImg[1] = loadImage("data/tamahime-4680x447-765AS.png");
+  picImg[0] = loadImage("tamahime-360x450.png");
+  // picImg[1] = loadImage("tamahime-720x450.png");
+  // picImg[1] = loadImage("tamahime-4680x450.png");
+  picImg[1] = loadImage("tamahime-4680x447-765AS.png");
 }
+
+// ---------------------------------------------------------
+
+void setToffset() {
+
+  int t0 = second();
+  while (t0 == second()) {
+    print(t0 + "+0." + millis() % 1000 + " ");
+    delay(1);
+  }
+  t_offset = millis();
+  println();
+  t_offset %= 1000;
+  println("t_offset = " + t_offset);
+}
+
+// ---------------------------------------------------------
 
 int t_offset = 0;
 
@@ -152,24 +151,18 @@ void setup() {
   background(0);
   stroke(255);
   smooth();
-  frameRate(10);
+  frameRate(30);
   colorMode(RGB, 256);
   textAlign(CENTER, CENTER);
   rectMode(CENTER);
   imageMode(CENTER);
   setImages();
-  int t0 = second();
-  while(t0 == second()) {
-    delay(5);
-  }
-  t_offset = millis();
-  print(second() + ", ");
-  print(t_offset + ", ");
-  t_offset %= 1000;
-  println(t_offset);
+
+  setToffset();
 }
 
 // ---------------------------------------------------------
+
 int debugCnt1 = 0;
 int debugCnt2 = 0;
 int i_prevx = 0;
@@ -186,58 +179,28 @@ void sub2(int _mm, int _ss) {
 
   if (debugflag) {strokeWeight(1); rect(sub2_cx, sub2_cy, sub2_w, sub2_h);}
 
-// # ifdef TYPE1
-//   image(picImg[((_mm*60+_ss)/1)%N_images], sub2_cx, sub2_cy, sub2_w, sub2_h);
-
-// # else // TYPE2
-
-  final float f_x0 = 13.9; // a little bit larger than (60*1000)/(4320) = 13.8888...;
   int i_sx = second(), i_tx = millis();
-
   while ((i_sx != second()) || (i_tx > millis())) { i_sx = second(); i_tx = millis(); }
   i_sx = second();
   i_tx = millis();
-   int i_x = int(((i_sx * 1000) + ((i_tx - t_offset) % 1000)) / f_x0);
-  if (i_x > (4320)) {
+
+  final int dps = image_w * 12 / 60; // == 72 // dps =/dot per second
+  int i_x = int(((i_sx * 1000) + ((i_tx - t_offset) % 1000)) * dps / 1000);
+
+  if (i_x > ((image_w * 12))) {
     println("over flow No." + debugCnt2 + " x = = " + i_x);
-    i_x = 4320;
+    i_x = (image_w * 12);
   }
 
   if ((i_x < i_prevx) && ((i_prevx < 4300) && (i_x > 20))) {
     println("*** " + debugCnt1 + " : " + i_prevx + " > " + i_x + " *** " + t_offset + " (" + hour() + ":" + minute() + ":" + second() + ")");
-    i_x = i_prevx;
     debugCnt1++;
   }
+
   i_prevx = i_x;
+  img2 = picImg[1].get(i_x, 0, image_w, image_h);
 
-  img2 = picImg[1].get(i_x, 0, 360, 447 /*450*/);
   image(img2, sub2_cx, sub2_cy, sub2_w, sub2_h);
-
-
-//   final float f_x0 = 13.9; // a little bit larger than (60*1000)/(360*12) = 13.8888...;
-//   int i_sx = second(), i_tx = millis();
-//   while ((i_sx != second()) || (i_tx > millis())) { i_sx = second(); i_tx = millis(); }
-//   i_sx = second();
-//   i_tx = millis();
-//   int  i_x = int(((i_sx * 1000) + ((i_tx - t_offset) % 1000)) / f_x0); // ((millis()) % (60*1000)) / f_x0;
-//   // float x = ((second() * 1000)) / f_x0; // ((millis()) % (60*1000)) / f_x0;
-//   // print((int)(x/360) + " -> ");
-//   // println((int)(x/360));
-//   if (i_x > (360*12)) {
-//     println("over flow No." + debugCnt2 + " x = = " + i_x); x = 360*12;
-//   }
-//   i_x = (i_x % 360);
-//   if ((i_x < prevx) && ((prevx < 355) && (x > 5))) {
-//     println("*** " + debugCnt1 + " : " + i_prevx + " > " + i_x + " *** " + t_offset + " (" + hour() + ":" + minute() + ":" + second() + ")");
-//     i_x = prevx;
-//     debugCnt1++;
-//   }
-//   i_prevx = i_x;
-//   // println((int)i_x);
-//   img2 = picImg[1].get(i_x, 0, 360, 450);
-//   image(img2, sub2_cx, sub2_cy, sub2_w, sub2_h);
-
-// # endif // TYPE2
 
   if (debugflag) {strokeWeight(1); rect(sub2_cx, sub2_cy + sub2_h *0.45,  sub2_tw, sub2_th);}
   textSize(sub2_th);
