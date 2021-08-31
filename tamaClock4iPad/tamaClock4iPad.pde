@@ -10,8 +10,7 @@
 // Last update: Thu 19 Aug 2021 11:16:33 AM JST by @hohno_at_kuimc on hohno-ACS-2021R/penguin
 
 // New version tuned for iPad: Sat Aug 28 18:47:39 JST 2021 by @hohno_at_kuimc
-// Last update: Tue Aug 31 17:45:49 JST 2021  by @hohno_at_kuimc
-
+// Last update: Tue Aug 31 18:07:26 JST 2021 by @hohno_at_kuimc
 
 // Originai: http://yoppa.org/proga10/1419.html
 
@@ -23,8 +22,8 @@
 final int message_area_w = 0;
 final int message_area_h = 32;
 
-final int screen_w = 640 - message_area_w; // screenWidth  // 640 // 320
-final int screen_h = 480 - message_area_h; // screenHeight // 400 // 200
+final int screen_w = screenWidth  - message_area_w; // screenWidth  // 640 // 320
+final int screen_h = screenHeight - message_area_h; // screenHeight // 400 // 200
 
 // ---------------------------------------------------------
 
@@ -140,7 +139,7 @@ void setToffset() {
   int t0 = second();
   while (t0 == second()) {
     print(t0 + "+0." + millis() % 1000 + " ");
-    delay(1);
+    // delay(1);
   }
   t_offset = millis();
   println();
@@ -154,6 +153,7 @@ int t_offset = 0;
 
 void setup() {
   size(screen_w, screen_h - message_area_h);
+
   background(0);
   stroke(255);
   smooth();
