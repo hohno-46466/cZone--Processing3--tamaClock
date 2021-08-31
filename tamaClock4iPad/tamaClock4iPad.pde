@@ -228,7 +228,7 @@ void sub1(int YY, int MM, int DD, int hh, int mm, int ss) {
   int sub1_th = int(screen_h * 0.06); // 20;   // text height
   int sub1_tw = sub1_th * 14; // 280;  // text width
   int sub1_cx = hands_cx;
-  int sub1_cy = int(screen_h * 0.975 - sub1_th /2);
+  int sub1_cy = int(screen_h * 0.975 - sub1_th * 3 / 4);
 
   char data[] = {'2', '0', '1', '6', '-', '0', '3', '-', '1', '0', ' ', '(', 'w', 'w', 'w', ')', ' ','1', '2', ':', '3', '4', ':', '5', '6'};
   String wodstr[] = { "Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "xxx" };
