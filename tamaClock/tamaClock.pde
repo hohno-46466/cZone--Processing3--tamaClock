@@ -16,16 +16,19 @@
 
 // ---------------------------------------------------------
 
-final int screen_w = 320; // 640; // 320; // 640;
-final int screen_h = 240; // 400; // 200; // 400;
+final int message_area_w = 0;
+final int message_area_h = 0;
+
+final int screen_w = 320 - message_area_w; // screenWidth  // 640 // 320
+final int screen_h = 240 - message_area_h; // screenHeight // 400 // 200
 
 // ---------------------------------------------------------
 
 boolean debugflag = false;
 PImage[] picImg;
 
-int tama_w = screen_w * 3 / 8;		// 120; // 360;
-int tama_h = screen_h * 3 / 4;		// 150; // 450;
+int tama_w = screen_w * 3 / 8;    // 120; // 360;
+int tama_h = screen_h * 3 / 4;    // 150; // 450;
 int hands_cx = screen_w * 5 / 16;
 int hands_cy = screen_h / 2;
 int hands_len = int(screen_h * 0.4);
@@ -108,15 +111,13 @@ int updateUnixTime2(int t) {
 // ---------------------------------------------------------
 // ---------------------------------------------------------
 
-
 void settings() {
-  size(screen_w, screen_h);
+  size(screen_w, screen_h - message_area_h);
   // fullscreen();
 }
 
 // ---------------------------------------------------------
 // ---------------------------------------------------------
-
 
 final int N_images = 2;
 
@@ -165,7 +166,9 @@ void setup() {
 
 int debugCnt1 = 0;
 int debugCnt2 = 0;
-int i_prevx = 0;
+int i_prevx = -1;
+PImage img2;
+final int dps = image_w * 12 / 60; // == 72 // dps = dot per second
 
 void sub2(int _mm, int _ss) {
 
@@ -173,47 +176,59 @@ void sub2(int _mm, int _ss) {
   int sub2_cy = screen_h /2 ;
   int sub2_w = tama_w;
   int sub2_h = tama_h;
-  int sub2_tw = 135;	// text width
-  int sub2_th = 14;	// text height
-  PImage img2;
+  int sub2_tw = 135;  // text width
+  int sub2_th = 14;   // text height
 
   if (debugflag) {strokeWeight(1); rect(sub2_cx, sub2_cy, sub2_w, sub2_h);}
+
+  if (i_prevx < 0) { img2 = picImg[1].get(0, 0, image_w, image_h); }
 
   int i_sx = second(), i_tx = millis();
   while ((i_sx != second()) || (i_tx > millis())) { i_sx = second(); i_tx = millis(); }
   i_sx = second();
   i_tx = millis();
 
-  final int dps = image_w * 12 / 60; // == 72 // dps =/dot per second
   int i_x = int(((i_sx * 1000) + ((i_tx - t_offset) % 1000)) * dps / 1000);
 
   if (i_x > ((image_w * 12))) {
+    debugCnt2++;
     println("over flow No." + debugCnt2 + " x = = " + i_x);
-    i_x = (image_w * 12);
+    i_x = 0; // (image_w * 12);
   }
 
-  if ((i_x < i_prevx) && ((i_prevx < 4300) && (i_x > 20))) {
-    println("*** " + debugCnt1 + " : " + i_prevx + " > " + i_x + " *** " + t_offset + " (" + hour() + ":" + minute() + ":" + second() + ")");
-    debugCnt1++;
-  }
+  // if ((i_x < i_prevx) && ((i_prevx < 4300) && (i_x > 20))) {
+  //    println("*** " + debugCnt1 + " : " + i_prevx + " > " + i_x + " *** " + t_offset + " (" + hour() + ":" + minute() + ":" + second() + ")");
+  //    debugCnt1++;
+  // }
+  // i_prevx = i_x;
+  // img2 = picImg[1].get(i_x, 0, image_w, image_h);
 
-  i_prevx = i_x;
-  img2 = picImg[1].get(i_x, 0, image_w, image_h);
+  if ((i_prevx != i_x)) {
+    if (int(i_prevx / (image_w/5)) != int(i_x / (image_w/5))) {
+      if (int(i_prevx / image_w) != int(i_x / image_w)) {
+        debugCnt1 = 0;
+        println(); print("i_x=");
+      }
+      debugCnt1++;
+      print(int(i_x / image_w) + "*" + image_w + "+" + i_x % image_w + ", ");
+    }
+    i_prevx = i_x;
+    img2 = picImg[1].get(i_x, 0, image_w, image_h);
+  }
 
   image(img2, sub2_cx, sub2_cy, sub2_w, sub2_h);
 
   if (debugflag) {strokeWeight(1); rect(sub2_cx, sub2_cy + sub2_h *0.45,  sub2_tw, sub2_th);}
   textSize(sub2_th);
   text("(c) Tamahime-chan", sub2_cx, sub2_cy + sub2_h *0.45);
-
 }
 
 // ---------------------------------------------------------
 
 void sub1(int YY, int MM, int DD, int hh, int mm, int ss) {
 
-  int sub1_th = int(screen_h * 0.06); // 20;	// text height
-  int sub1_tw = sub1_th * 14; // 280;	// text width
+  int sub1_th = int(screen_h * 0.06); // 20;  // text height
+  int sub1_tw = sub1_th * 14; // 280;   // text width
   int sub1_cx = hands_cx;
   int sub1_cy = int(screen_h * 0.975 - sub1_th /2);
 
@@ -258,10 +273,10 @@ void sub1(int YY, int MM, int DD, int hh, int mm, int ss) {
 
   textSize(sub1_th);
   String str = new String(data);
+  // String str = join(data, " ");
 
   if (debugflag) {strokeWeight(1); rect(sub1_cx, sub1_cy, sub1_tw, sub1_th);}
-  text(str, sub1_cx, sub1_cy);
-
+  text(str, sub1_cx + screen_w / 5, sub1_cy);
 }
 
 // ---------------------------------------------------------
@@ -275,24 +290,24 @@ void sub3(int YY, int MM, int DD, int hh, int mm, int ss) {
   float h = (hh % 12) + (m/60.0);
 
   int colTable[] = {
-  #f70f1f, // haruka (y)
-  #0775c4, // chihaya (D)
-  #aececb, // yukiho (f)
-  #f29047, // yayoi (l)
-  #00a752, // ritsuko (r)
-  #7e51a6, // Azusa (C)
-  #fa98bf, // iori (o)
-  #464b4f, // makoto (u)
-  #fcd424, // amimami (a)
-  #a1ca62, // miki (s)
-  #00b1bb, // hibiki ()
-  #b51d66 // takane ()
+    #f70f1f, // haruka (y)
+    #0775c4, // chihaya (D)
+    #aececb, // yukiho (f)
+    #f29047, // yayoi (l)
+    #00a752, // ritsuko (r)
+    #7e51a6, // Azusa (C)
+    #fa98bf, // iori (o)
+    #464b4f, // makoto (u)
+    #fcd424, // amimami (a)
+    #a1ca62, // miki (s)
+    #00b1bb, // hibiki ()
+    #b51d66 // takane ()
   };
 
   String nameTable[] = {
-  "Haruka"  , "Chihaya" , " Yukiho" , "Yayoi"   ,
-  "Ritsuko" , "Azusa"   , "Iori"    , "Makoto"  ,
-  "Ami/Mami", "Miki"    , "Hibiki"  , "Takane " , "12345678",
+    "Haruka"  , "Chihaya" , " Yukiho" , "Yayoi"     ,
+    "Ritsuko" , "Azusa"     , "Iori"    , "Makoto"  ,
+    "Ami/Mami", "Miki"    , "Hibiki"  , "Takane " , "12345678",
   };
 
 
@@ -301,7 +316,7 @@ void sub3(int YY, int MM, int DD, int hh, int mm, int ss) {
   int sub3_cy = 0;
   int sub3_w = int(screen_h * 0.95);
   int sub3_h = int(screen_h * 0.95);
-  int sub3_th = int(screen_h * 0.06); // 20;	// text height
+  int sub3_th = int(screen_h * 0.06); // 20;  // text height
   int sub3_tw = sub3_th *4;
 
   textSize(sub3_th);
@@ -314,20 +329,20 @@ void sub3(int YY, int MM, int DD, int hh, int mm, int ss) {
   rotate(radians(180));
 
   pushMatrix();
-    noStroke();
-    // draw stones.
-    fill(colTable[(ss / 5) % 12]);
-    for(int i = 0; i < 60; i++){
-      if ((i % 5) == 0) {
-        // fill(colTable[(ss / 5) % 12]);
-        ellipse(r-MARGIN,0,10,10);
-      } else {
-        // fill(127);
-        ellipse(r-MARGIN,0,3,3);
-      }
-      rotate(radians(6));
+  noStroke();
+  // draw stones.
+  fill(colTable[(ss / 5) % 12]);
+  for(int i = 0; i < 60; i++){
+    if ((i % 5) == 0) {
+      // fill(colTable[(ss / 5) % 12]);
+      ellipse(r-MARGIN,0,10,10);
+    } else {
+      // fill(127);
+      ellipse(r-MARGIN,0,3,3);
     }
-    fill(255);
+    rotate(radians(6));
+  }
+  fill(255);
   popMatrix();
 
   noFill();
@@ -335,40 +350,36 @@ void sub3(int YY, int MM, int DD, int hh, int mm, int ss) {
 
   // sec hand
   pushMatrix();
-    rotate(radians(s * 6));
-    strokeWeight(1);
-    line(0, 0, 0, r - MARGIN);
+  rotate(radians(s * 6));
+  strokeWeight(1);
+  line(0, 0, 0, r - MARGIN);
   popMatrix();
 
   // minute hand
   pushMatrix();
-    rotate(radians(m * 6));
-    strokeWeight(4);
-    line(0, 0, 0, r * 0.85 - MARGIN);
+  rotate(radians(m * 6));
+  strokeWeight(4);
+  line(0, 0, 0, r * 0.85 - MARGIN);
   popMatrix();
 
   // hour hand
   pushMatrix();
-    rotate(radians(h * 30));
-    strokeWeight(8);
-    line(0, 0, 0, r * 0.7 - MARGIN);
+  rotate(radians(h * 30));
+  strokeWeight(8);
+  line(0, 0, 0, r * 0.7 - MARGIN);
   popMatrix();
 }
 
-
 // ---------------------------------------------------------
 // ---------------------------------------------------------
-
 
 int maxFrames = 900;
 int currentFrame = 0;
-
 int debugCnt = 0;
-
 
 void draw() {
 
-  updateUnixTime0(); // updateUnixTime1()
+  updateUnixTime0(); // updateUnixTime1();
 
   background(0);
   // draw digital clock part
@@ -384,11 +395,11 @@ void draw() {
   }
 
   if (myKBD.readStringUntil('\n') > 0) {
-    String str = new String(myKBD.mesgBuff);
+    String str = new String(myKBD.mesgBuff); // join(myKBD.mesgBuff, "");
     println("[" + debugCnt + "](" + myKBD.getBuffPos() + "/" + myKBD.getMesgLen() + ")(" + str +  ")" );
 
     // println(myKBD._i_mesgBuffSize);
-    // myTST.x = 1;   myTST.y = 2;  myTST.z = debugCnt;
+    // myTST.x = 1;     myTST.y = 2;  myTST.z = debugCnt;
     // println(myTST.x + " " + myTST.y + " " + myTST.z);
     debugCnt++;
   }
@@ -397,20 +408,15 @@ void draw() {
 // ---------------------------------------------------------
 // ---------------------------------------------------------
 
-
 void keyTyped() {
   myKBD.keyTyped();
 }
-
 
 void keyPressed() {
   // if (key == ' ') { exit(); }
 }
 
-
 void keyReleased() {
 }
-
-
 
 // ---------------------------------------------------------
