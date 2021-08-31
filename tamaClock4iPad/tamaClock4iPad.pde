@@ -9,7 +9,9 @@
 // Last update: Wed Aug 18 20:57:08 JST 2021 by @hohno_at_kuimc
 // Last update: Thu 19 Aug 2021 11:16:33 AM JST by @hohno_at_kuimc on hohno-ACS-2021R/penguin
 
-// New version for iPad: Sat Aug 28 18:47:39 JST 2021 by @hohno_at_kuimc
+// New version tuned for iPad: Sat Aug 28 18:47:39 JST 2021 by @hohno_at_kuimc
+// Last update: Tue Aug 31 17:45:49 JST 2021  by @hohno_at_kuimc
+
 
 // Originai: http://yoppa.org/proga10/1419.html
 
@@ -151,6 +153,7 @@ void setToffset() {
 int t_offset = 0;
 
 void setup() {
+  size(screen_w, screen_h - message_area_h);
   background(0);
   stroke(255);
   smooth();
@@ -267,8 +270,8 @@ void sub1(int YY, int MM, int DD, int hh, int mm, int ss) {
   data[24] = char (int('0') + (int)(ss % 10));
 
   textSize(sub1_th);
-  String str = new String(data);
-  // String str = join(data, " ");
+  // String str = new String(data);
+  String str = join(data, " ");
 
   if (debugflag) {strokeWeight(1); rect(sub1_cx, sub1_cy, sub1_tw, sub1_th);}
   text(str, sub1_cx + screen_w / 5, sub1_cy);
@@ -390,7 +393,8 @@ void draw() {
   }
 
   if (myKBD.readStringUntil('\n') > 0) {
-    String str = new String(myKBD.mesgBuff); // join(myKBD.mesgBuff, "");
+    // String str = new String(myKBD.mesgBuff);
+    String str = join(myKBD.mesgBuff, "");
     println("[" + debugCnt + "](" + myKBD.getBuffPos() + "/" + myKBD.getMesgLen() + ")(" + str  +    ")" );
 
     // println(myKBD._i_mesgBuffSize);
