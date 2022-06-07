@@ -1,4 +1,4 @@
-#! /bin/sh
+#!/bin/sh
 
 INPUT=tamahime-360x450.png
 OUTPUT=tamahime-360x447

@@ -1,4 +1,4 @@
-#! /bin/sh
+#!/bin/sh
 
 PICFILE=tamahime-360x447
 
