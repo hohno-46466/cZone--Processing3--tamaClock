@@ -91,8 +91,8 @@ Last update: Thu Aug 19 19:38:49 JST 2021
      5 directories, 79 files (Wed Jul 20 06:17:07 JST 2022)
 
 
-Note: url = https://github.com/hohno-46466/cZone--Processing3--tamaClock
+Note: URL = https://github.com/hohno-46466/cZone--Processing3--tamaClock
 
-Note: url = git@github.com:hohno-46466/cZone--Processing3--tamaClock.git
+Note: URL = git@github.com:hohno-46466/cZone--Processing3--tamaClock.git
 
 -EOF-
