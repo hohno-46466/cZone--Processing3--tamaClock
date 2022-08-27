@@ -2,7 +2,7 @@
 
 Last update: Thu Aug 19 19:38:49 JST 2021
 
-    ./cZone--Processing3--tamaClock
+    ./cZone--Processing3--tamaClock/
      ├──  README.md
      ├──  README.md.old
      ├──  tamaClock/
@@ -42,7 +42,7 @@ Last update: Thu Aug 19 19:38:49 JST 2021
          ├──  tamaClock.pde.prev
          └──  tamaClock4iPad.pde
      
-     5 directories, 33 files (Sun Aug 14 23:17:55 JST 2022)
+     5 directories, 33 files (Sat Aug 27 22:47:54 JST 2022)
 
 
 Note: URL = https://github.com/hohno-46466/cZone--Processing3--tamaClock
